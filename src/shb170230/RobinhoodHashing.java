@@ -121,7 +121,7 @@ public class RobinhoodHashing<T> {
     public boolean add(T x)
     {
 
-        double currentLoad = (this.size + 1) / robinhoodHashingHashTable.length;
+        double currentLoad = (this.size + 1) / (robinhoodHashingHashTable.length * 1.0);
         System.out.println("Curent load: " + currentLoad);
         if (currentLoad > LOADFACTOR) {
             rehashTable();
