@@ -178,7 +178,8 @@ public class RobinhoodHashing<T> {
         Entry<T> temporaryHashingTable[] = this.robinhoodHashingHashTable;
         this.capacity = capacity * 2;
         this.robinhoodHashingHashTable = new Entry[capacity];
-
+        this.size = 0;
+        
         for (int i = 0; i < temporaryHashingTable.length; i++) {
             if (temporaryHashingTable[i] != null) {
                 temporaryHashingTable[i].isDeleted = false;
