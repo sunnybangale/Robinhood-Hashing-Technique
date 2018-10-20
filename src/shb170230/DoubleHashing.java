@@ -40,48 +40,17 @@ public class DoubleHashing<T>{
         return h ^ (h >>> 7) ^ (h >>> 4);
     }
 
-/*
-    static int hashFunction2(int h)
-    {
-        h ^= (h >>> 20) ^ (h >>> 12);
-        return h ^ (h >>> 7) ^ (h >>> 4);
-    }
-*/
 
     private int hashHelper1(T x)
     {
         return indexFor(hashFunction1(x.hashCode()),doubleHashingHashTable.length);
     }
 
-/*
-    private int hashHelper2(T x)
-    {
-        return indexFor(hashFunction1(x.hashCode()),size);
-    }
-*/
 
     private static int indexFor(int h, int length)
     {
         return (h & length-1);
     }
-
-/*    public int find(T x)
-    {
-        int h1 = hashHelper1(x);
-        int h2 =  hashHelper2(x);
-
-        while(doubleHashingHashTable[h1]== null)
-        {
-            if(doubleHashingHashTable[h1].data == x)
-            {
-                return h1;
-            }
-            h1 += h2;
-            h1 %= h2;
-        }
-
-        return -1;
-    }*/
 
     public int find(T x) {
         int k = 0;
@@ -123,9 +92,9 @@ public class DoubleHashing<T>{
     public void printTable()
     {
         System.out.print("Table: ");
-        for(int j=0; j < size; j++)
+        for(int j = 0; j < doubleHashingHashTable.length; j++)
         {
-            if(doubleHashingHashTable[j] != null)
+            if(doubleHashingHashTable[j] != null && doubleHashingHashTable[j].isDeleted == false)
                 System.out.print(doubleHashingHashTable[j].data+ " ");
             else
                 System.out.print("*--* ");
@@ -186,9 +155,35 @@ public class DoubleHashing<T>{
         }
     }
 
+    public Entry remove(T x) {
+        int loc = find(x);
+        if (doubleHashingHashTable[loc] == x)
+        {
+            Entry result = doubleHashingHashTable[loc];
+            doubleHashingHashTable[loc].isDeleted = true;
+            return result;
+        }
+        else
+            {
+            return null;
+        }
+    }
+
 
     public static void main(String[] args) {
 
+        DoubleHashing map = new DoubleHashing();
+
+        for(int i = 0; i<= 100; i++ )
+        {
+            map.add(i);
+        }
+        map.printTable();
+        for(int i = 50; i<= 100; i++ )
+        {
+            map.remove(i);
+        }
+        map.printTable();
     }
 
 }
