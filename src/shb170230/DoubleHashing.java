@@ -5,17 +5,6 @@ public class DoubleHashing<T>{
     int size;
     Entry[] doubleHashingHashTable;
 
- /*   static class Entry<T> {
-        T value;
-        int probe;
-
-        public Entry(T value) {
-            this.value = value;
-            this.probe = 0;
-        }
-
-    }
-*/
     static class Entry<T>
     {
         T data;
@@ -34,37 +23,38 @@ public class DoubleHashing<T>{
         this.doubleHashingHashTable = new Entry[1024];
     }
 
-    static int hashFunction1(int h)
+    static int hash(int h)
     {
         h ^= (h >>> 20) ^ (h >>> 12);
         return h ^ (h >>> 7) ^ (h >>> 4);
     }
 
-
-    private int hashHelper1(T x)
+    private int hashHelper(T x)
     {
-        return indexFor(hashFunction1(x.hashCode()),doubleHashingHashTable.length);
+        return indexFor( hash(x.hashCode()), doubleHashingHashTable.length);
     }
-
 
     private static int indexFor(int h, int length)
     {
         return (h & length-1);
     }
 
-    public int find(T x) {
+    public int find(T x)
+    {
         int k = 0;
-        int ik = hashHelper1(x);
+        int ik = hashHelper(x);
+
         while (true)
         {
-            //ik = hashHelper1(x) + (k * hashHelper2(x)) % size;
+            //ik = hashHelper(x) + (k * hashHelper2(x)) % size;
             ik += k % doubleHashingHashTable.length;
-            if(doubleHashingHashTable[ik] == x || doubleHashingHashTable[ik] == null)
+            //System.out.println(doubleHashingHashTable[ik]);
+            if( doubleHashingHashTable[ik]== null || doubleHashingHashTable[ik].data.equals(x))
             {
                 return ik;
             }
             else
-                if(doubleHashingHashTable[ik].isDeleted == true)
+                if(doubleHashingHashTable[ik].isDeleted)
                 {
                     break;
                 }
@@ -75,14 +65,15 @@ public class DoubleHashing<T>{
         }
 
         int xspot = ik;
+
         while(true)
         {
             k++;
-            if (doubleHashingHashTable[ik] == x)
+            if (doubleHashingHashTable[ik].data.equals(x))
             {
                 return ik;
             }
-            if(doubleHashingHashTable[ik] == null)
+            if(doubleHashingHashTable[ik].equals(null))
             {
                 return xspot;
             }
@@ -97,7 +88,7 @@ public class DoubleHashing<T>{
             if(doubleHashingHashTable[j] != null && doubleHashingHashTable[j].isDeleted == false)
                 System.out.print(doubleHashingHashTable[j].data+ " ");
             else
-                System.out.print("*--* ");
+                System.out.print("* ");
         }
         System.out.println("");
     }
@@ -105,7 +96,7 @@ public class DoubleHashing<T>{
     public boolean contains(T x)
     {
         int loc = find(x);
-        if(doubleHashingHashTable[loc] == x)
+        if(doubleHashingHashTable[loc]!= null && doubleHashingHashTable[loc].data.equals(x))
         {
             return true;
         }
@@ -117,7 +108,7 @@ public class DoubleHashing<T>{
 
     private int displacement(T x, int loc)
     {
-        return loc >= hashHelper1(x) ? loc - hashHelper1(x): doubleHashingHashTable.length + loc - hashHelper1(x);
+        return loc >= hashHelper(x) ? loc - hashHelper(x): doubleHashingHashTable.length + loc - hashHelper(x);
     }
 
     public boolean add(T x)
@@ -127,14 +118,15 @@ public class DoubleHashing<T>{
             return false;
         }
 
-        int loc = hashHelper1(x);
+        int loc = hashHelper(x);
         int d = 0;
 
         while(true)
         {
-            if(doubleHashingHashTable[loc] == null || doubleHashingHashTable[loc].isDeleted == true)
+            if(doubleHashingHashTable[loc]== null || doubleHashingHashTable[loc].isDeleted == true)
             {
                 doubleHashingHashTable[loc] = new Entry(x);
+                size++;
                 return true;
             }
             else
@@ -155,10 +147,13 @@ public class DoubleHashing<T>{
         }
     }
 
-    public Entry remove(T x) {
+    public Entry remove(T x)
+    {
         int loc = find(x);
-        if (doubleHashingHashTable[loc] == x)
+        //System.out.println("location to remove "+loc);
+        if (doubleHashingHashTable[loc]!= null && doubleHashingHashTable[loc].data.equals(x))
         {
+            //System.out.println("in");
             Entry result = doubleHashingHashTable[loc];
             doubleHashingHashTable[loc].isDeleted = true;
             return result;
@@ -172,16 +167,16 @@ public class DoubleHashing<T>{
 
     public static void main(String[] args) {
 
-        DoubleHashing map = new DoubleHashing();
+        DoubleHashing<Integer> map = new DoubleHashing();
 
-        for(int i = 0; i<= 100; i++ )
-        {
+        System.out.println("Index for find " + map.find(87));
+
+        for(int i = 0; i<= 1000; i++ ) {
             map.add(i);
         }
         map.printTable();
-        for(int i = 50; i<= 100; i++ )
-        {
-            map.remove(i);
+        for(int i = 50; i<= 1000; i++ ){
+        map.remove(i);
         }
         map.printTable();
     }
