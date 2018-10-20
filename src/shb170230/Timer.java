@@ -7,7 +7,7 @@
  *          System.out.println(timer);  // output statistics
  */
 
-package usg170030;
+package shb170230;
 public class Timer {
     long startTime, endTime, elapsedTime, memAvailable, memUsed;
 

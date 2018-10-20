@@ -1,5 +1,7 @@
 package shb170230;
 
+import java.util.Random;
+
 public class DriverProgram {
 
 
@@ -18,8 +20,10 @@ public class DriverProgram {
         Random r = new Random();
         Integer[] integers = new Integer[1000];
         for (int i = 0; i < integers.length; i++) {
-            integers[i] = r.nextInt();
+            int newNumber = r.nextInt();
+            integers[i] = newNumber;
         }
+        //System.out.println(Arrays.toString(integers));
         Timer timer = new Timer();
         timer.start();
         System.out.println(RobinhoodHashing.distinctElements(integers));

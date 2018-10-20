@@ -105,16 +105,30 @@ public class RobinhoodHashing<T> {
         return loc >= hashHelper(x) ? loc - hashHelper(x) : robinhoodHashingHashTable.length + loc - hashHelper(x);
     }
 
+    static <T> int distinctElements(T[] arr) {
+        //Set<T> set = new HashSet<>();
+        //set.addAll(Arrays.asList(arr));
+        RobinhoodHashing<T> rh = new RobinhoodHashing<>();
+        for (T ele : arr) {
+            //System.out.println("Now adding: " + ele);
+            //rh.printTable();
+            rh.add(ele);
+        }
+        return rh.size;
+        //return set.size();
+    }
+
     public boolean add(T x)
     {
 
-        if(contains(x))
-        {
-            return false;
+        double currentLoad = (this.size + 1) / robinhoodHashingHashTable.length;
+        System.out.println("Curent load: " + currentLoad);
+        if (currentLoad > LOADFACTOR) {
+            rehashTable();
         }
 
-        if ((size + 1) / robinhoodHashingHashTable.length > LOADFACTOR) {
-            rehashTable();
+        if (contains(x)) {
+            return false;
         }
 
         int loc = hashHelper(x);
@@ -125,7 +139,7 @@ public class RobinhoodHashing<T> {
             if (robinhoodHashingHashTable[loc] == null || robinhoodHashingHashTable[loc].isDeleted == true)
             {
                 robinhoodHashingHashTable[loc] = new Entry(x);
-                size++;
+                this.size++;
                 return true;
             }
             else if (displacement((T) robinhoodHashingHashTable[loc], loc) >= d)
@@ -145,7 +159,21 @@ public class RobinhoodHashing<T> {
         }
     }
 
+    public Entry remove(T x) {
+        int loc = find(x);
+        if (robinhoodHashingHashTable[loc] != null && robinhoodHashingHashTable[loc].data.equals(x)) {
+            Entry result = robinhoodHashingHashTable[loc];
+            robinhoodHashingHashTable[loc].isDeleted = true;
+            return result;
+        } else {
+            return null;
+        }
+    }
+    
     private void rehashTable() {
+        System.out.println();
+        System.out.println("Rehashing....");
+        System.out.println();
 
         Entry<T> temporaryHashingTable[] = this.robinhoodHashingHashTable;
         this.capacity = capacity * 2;
@@ -153,36 +181,11 @@ public class RobinhoodHashing<T> {
 
         for (int i = 0; i < temporaryHashingTable.length; i++) {
             if (temporaryHashingTable[i] != null) {
+                temporaryHashingTable[i].isDeleted = false;
                 add(temporaryHashingTable[i].data);
             }
         }
 
-    }
-
-    public Entry remove(T x)
-    {
-        int loc = find(x);
-        if (robinhoodHashingHashTable[loc] != null && robinhoodHashingHashTable[loc].data.equals(x))
-        {
-            Entry result = robinhoodHashingHashTable[loc];
-            robinhoodHashingHashTable[loc].isDeleted = true;
-            return result;
-        }
-        else
-            {
-            return null;
-        }
-    }
-    
-    static<T> int distinctElements(T[ ] arr) {
-        //Set<T> set = new HashSet<>();
-        //set.addAll(Arrays.asList(arr));
-        RobinhoodHashing<T> rh = new RobinhoodHashing<>();
-        for (T ele: arr){
-            rh.add(ele);
-        }
-        return rh.size;
-        //return set.size();
     }
 
 }
