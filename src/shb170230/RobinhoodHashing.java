@@ -5,7 +5,8 @@ public class RobinhoodHashing<T> {
     static final double LOADFACTOR = 0.5;
     private int size;
     private Entry[] robinhoodHashingHashTable;
-    private int capacity = 8;
+    private int capacity = 1024;
+    private int maxDisplacement = 0;
 
     static class Entry<T>
     {
@@ -47,6 +48,7 @@ public class RobinhoodHashing<T> {
         int ik = hashHelper(x);
 
         while (true)
+        //while( k <= maxDisplacement)
         {
             //ik = hashHelper(x) + (k * hashHelper2(x)) % size;
             ik = (ik + k) % robinhoodHashingHashTable.length;
@@ -68,6 +70,7 @@ public class RobinhoodHashing<T> {
         int xspot = ik;
 
         while(true)
+        //while( k <= maxDisplacement)
         {
             k++;
             if (robinhoodHashingHashTable[ik].data.equals(x))
@@ -79,6 +82,7 @@ public class RobinhoodHashing<T> {
                 return xspot;
             }
         }
+        //return ik;
     }
 
     public void printTable()
@@ -106,24 +110,17 @@ public class RobinhoodHashing<T> {
     }
 
     static <T> int distinctElements(T[] arr) {
-        //Set<T> set = new HashSet<>();
-        //set.addAll(Arrays.asList(arr));
         RobinhoodHashing<T> rh = new RobinhoodHashing<>();
         for (T ele : arr) {
-            //System.out.println("Now adding: " + ele);
-            //rh.printTable();
             rh.add(ele);
         }
         //rh.printTable();
         return rh.size;
-        //return set.size();
     }
 
     public boolean add(T x)
     {
-
         double currentLoad = (this.size + 1) / (robinhoodHashingHashTable.length * 1.0);
-        //System.out.println("Curent load: " + currentLoad + " size: " + this.size);
         if (currentLoad > LOADFACTOR) {
             rehashTable();
         }
@@ -156,6 +153,11 @@ public class RobinhoodHashing<T> {
 
                     loc = (loc + 1) % robinhoodHashingHashTable.length;
                     d = displacement(x, loc);
+
+                    if (d > maxDisplacement) {
+                        maxDisplacement = d;
+                    }
+
                 }
         }
     }
@@ -171,25 +173,19 @@ public class RobinhoodHashing<T> {
             return null;
         }
     }
-    
-    private void rehashTable() {
-        System.out.println();
-        System.out.println("Rehashing....");
-        System.out.println();
 
-        
+    private void rehashTable() {
         Entry<T> temporaryHashingTable[] = this.robinhoodHashingHashTable;
         this.capacity = capacity * 2;
         this.robinhoodHashingHashTable = new Entry[capacity];
         this.size = 0;
-        
+
         for (int i = 0; i < temporaryHashingTable.length; i++) {
             if (temporaryHashingTable[i] != null) {
                 temporaryHashingTable[i].isDeleted = false;
                 add(temporaryHashingTable[i].data);
             }
         }
-
     }
 
 }
