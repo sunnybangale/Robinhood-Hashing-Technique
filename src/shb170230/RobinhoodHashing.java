@@ -173,5 +173,16 @@ public class RobinhoodHashing<T> {
             return null;
         }
     }
+    
+    static<T> int distinctElements(T[ ] arr) {
+        //Set<T> set = new HashSet<>();
+        //set.addAll(Arrays.asList(arr));
+        RobinhoodHashing<T> rh = new RobinhoodHashing<>();
+        for (T ele: arr){
+            rh.add(ele);
+        }
+        return rh.size;
+        //return set.size();
+    }
 
 }
