@@ -49,7 +49,7 @@ public class RobinhoodHashing<T> {
         while (true)
         {
             //ik = hashHelper(x) + (k * hashHelper2(x)) % size;
-            ik += k % robinhoodHashingHashTable.length;
+            ik = (ik + k) % robinhoodHashingHashTable.length;
 
             if (robinhoodHashingHashTable[ik] == null || robinhoodHashingHashTable[ik].data.equals(x))
             {
@@ -122,7 +122,7 @@ public class RobinhoodHashing<T> {
     {
 
         double currentLoad = (this.size + 1) / (robinhoodHashingHashTable.length * 1.0);
-        System.out.println("Curent load: " + currentLoad);
+        System.out.println("Curent load: " + currentLoad + " size: " + this.size);
         if (currentLoad > LOADFACTOR) {
             rehashTable();
         }
