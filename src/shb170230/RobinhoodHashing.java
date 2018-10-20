@@ -53,7 +53,8 @@ public class RobinhoodHashing<T> {
             //ik = hashHelper(x) + (k * hashHelper2(x)) % size;
             ik = (ik + k) % robinhoodHashingHashTable.length;
 
-            if (robinhoodHashingHashTable[ik] == null || robinhoodHashingHashTable[ik].data.equals(x))
+            if (robinhoodHashingHashTable[ik] == null ||
+                    (robinhoodHashingHashTable[ik].data.equals(x) && !robinhoodHashingHashTable[ik].isDeleted))
             {
                 return ik;
             }
@@ -101,7 +102,8 @@ public class RobinhoodHashing<T> {
     public boolean contains(T x)
     {
         int loc = find(x);
-        return robinhoodHashingHashTable[loc] != null && robinhoodHashingHashTable[loc].data.equals(x);
+        return ((robinhoodHashingHashTable[loc] != null) && robinhoodHashingHashTable[loc].data.equals(x)
+                && (robinhoodHashingHashTable[loc].isDeleted == false));
     }
 
     private int displacement(T x, int loc)
