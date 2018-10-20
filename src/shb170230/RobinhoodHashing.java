@@ -177,7 +177,7 @@ public class RobinhoodHashing<T> {
         System.out.println("Rehashing....");
         System.out.println();
 
-        this.size = 0;
+        
         Entry<T> temporaryHashingTable[] = this.robinhoodHashingHashTable;
         this.capacity = capacity * 2;
         this.robinhoodHashingHashTable = new Entry[capacity];
