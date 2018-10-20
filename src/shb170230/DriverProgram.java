@@ -18,10 +18,11 @@ public class DriverProgram {
         }*/
         map.printTable();
         Random r = new Random();
-        Integer[] integers = new Integer[1000];
+        Integer[] integers = new Integer[1000000000];
         for (int i = 0; i < integers.length; i++) {
             int newNumber = r.nextInt();
             integers[i] = newNumber;
+            //integers[i] = i;
         }
         //System.out.println(Arrays.toString(integers));
         Timer timer = new Timer();

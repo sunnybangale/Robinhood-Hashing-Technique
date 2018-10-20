@@ -5,7 +5,7 @@ public class RobinhoodHashing<T> {
     static final double LOADFACTOR = 0.5;
     private int size;
     private Entry[] robinhoodHashingHashTable;
-    private int capacity = 1024;
+    private int capacity = 8;
 
     static class Entry<T>
     {
@@ -114,6 +114,7 @@ public class RobinhoodHashing<T> {
             //rh.printTable();
             rh.add(ele);
         }
+        //rh.printTable();
         return rh.size;
         //return set.size();
     }
@@ -122,7 +123,7 @@ public class RobinhoodHashing<T> {
     {
 
         double currentLoad = (this.size + 1) / (robinhoodHashingHashTable.length * 1.0);
-        System.out.println("Curent load: " + currentLoad + " size: " + this.size);
+        //System.out.println("Curent load: " + currentLoad + " size: " + this.size);
         if (currentLoad > LOADFACTOR) {
             rehashTable();
         }
@@ -164,6 +165,7 @@ public class RobinhoodHashing<T> {
         if (robinhoodHashingHashTable[loc] != null && robinhoodHashingHashTable[loc].data.equals(x)) {
             Entry result = robinhoodHashingHashTable[loc];
             robinhoodHashingHashTable[loc].isDeleted = true;
+            this.size--;
             return result;
         } else {
             return null;
@@ -175,6 +177,7 @@ public class RobinhoodHashing<T> {
         System.out.println("Rehashing....");
         System.out.println();
 
+        this.size = 0;
         Entry<T> temporaryHashingTable[] = this.robinhoodHashingHashTable;
         this.capacity = capacity * 2;
         this.robinhoodHashingHashTable = new Entry[capacity];
