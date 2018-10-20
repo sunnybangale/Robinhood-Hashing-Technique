@@ -7,13 +7,11 @@ public class DriverProgram {
 
         RobinhoodHashing<Integer> map = new RobinhoodHashing();
 
-        System.out.println("Index for find " + map.find(87));
-
-        for (int i = 0; i <= 1000; i++) {
+        for (int i = 0; i <= 2000; i++) {
             map.add(i);
         }
         map.printTable();
-        for (int i = 50; i <= 1000; i++) {
+        for (int i = 50; i <= 100; i++) {
             map.remove(i);
         }
         map.printTable();

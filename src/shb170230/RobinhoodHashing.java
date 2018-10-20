@@ -4,7 +4,8 @@ public class RobinhoodHashing<T> {
 
     static final double LOADFACTOR = 0.5;
     private int size;
-    private Entry[] doubleHashingHashTable;
+    private Entry[] robinhoodHashingHashTable;
+    private int capacity = 1024;
 
     static class Entry<T>
     {
@@ -21,7 +22,7 @@ public class RobinhoodHashing<T> {
     RobinhoodHashing()
     {
         this.size = 0;
-        this.doubleHashingHashTable = new Entry[1024];
+        this.robinhoodHashingHashTable = new Entry[capacity];
     }
 
     static int hash(int h)
@@ -32,7 +33,7 @@ public class RobinhoodHashing<T> {
 
     private int hashHelper(T x)
     {
-        return indexFor( hash(x.hashCode()), doubleHashingHashTable.length);
+        return indexFor(hash(x.hashCode()), robinhoodHashingHashTable.length);
     }
 
     private static int indexFor(int h, int length)
@@ -48,14 +49,13 @@ public class RobinhoodHashing<T> {
         while (true)
         {
             //ik = hashHelper(x) + (k * hashHelper2(x)) % size;
-            ik += k % doubleHashingHashTable.length;
+            ik += k % robinhoodHashingHashTable.length;
 
-            if( doubleHashingHashTable[ik]== null || doubleHashingHashTable[ik].data.equals(x))
+            if (robinhoodHashingHashTable[ik] == null || robinhoodHashingHashTable[ik].data.equals(x))
             {
                 return ik;
             }
-            else
-                if(doubleHashingHashTable[ik].isDeleted)
+            else if (robinhoodHashingHashTable[ik].isDeleted)
                 {
                     break;
                 }
@@ -70,11 +70,11 @@ public class RobinhoodHashing<T> {
         while(true)
         {
             k++;
-            if (doubleHashingHashTable[ik].data.equals(x))
+            if (robinhoodHashingHashTable[ik].data.equals(x))
             {
                 return ik;
             }
-            if(doubleHashingHashTable[ik].equals(null))
+            if (robinhoodHashingHashTable[ik] == null)
             {
                 return xspot;
             }
@@ -84,10 +84,10 @@ public class RobinhoodHashing<T> {
     public void printTable()
     {
         System.out.print("Table: ");
-        for(int j = 0; j < doubleHashingHashTable.length; j++)
+        for (int j = 0; j < robinhoodHashingHashTable.length; j++)
         {
-            if(doubleHashingHashTable[j] != null && doubleHashingHashTable[j].isDeleted == false)
-                System.out.print(doubleHashingHashTable[j].data+ " ");
+            if (robinhoodHashingHashTable[j] != null && robinhoodHashingHashTable[j].isDeleted == false)
+                System.out.print(robinhoodHashingHashTable[j].data + " ");
             else
                 System.out.print("* ");
         }
@@ -97,12 +97,12 @@ public class RobinhoodHashing<T> {
     public boolean contains(T x)
     {
         int loc = find(x);
-        return doubleHashingHashTable[loc] != null && doubleHashingHashTable[loc].data.equals(x);
+        return robinhoodHashingHashTable[loc] != null && robinhoodHashingHashTable[loc].data.equals(x);
     }
 
     private int displacement(T x, int loc)
     {
-        return loc >= hashHelper(x) ? loc - hashHelper(x): doubleHashingHashTable.length + loc - hashHelper(x);
+        return loc >= hashHelper(x) ? loc - hashHelper(x) : robinhoodHashingHashTable.length + loc - hashHelper(x);
     }
 
     public boolean add(T x)
@@ -113,7 +113,7 @@ public class RobinhoodHashing<T> {
             return false;
         }
 
-        if ((size + 1) / doubleHashingHashTable.length > LOADFACTOR) {
+        if ((size + 1) / robinhoodHashingHashTable.length > LOADFACTOR) {
             rehashTable();
         }
 
@@ -122,25 +122,24 @@ public class RobinhoodHashing<T> {
 
         while(true)
         {
-            if(doubleHashingHashTable[loc]== null || doubleHashingHashTable[loc].isDeleted == true)
+            if (robinhoodHashingHashTable[loc] == null || robinhoodHashingHashTable[loc].isDeleted == true)
             {
-                doubleHashingHashTable[loc] = new Entry(x);
+                robinhoodHashingHashTable[loc] = new Entry(x);
                 size++;
                 return true;
             }
-            else
-                if(displacement((T)doubleHashingHashTable[loc], loc) >= d)
+            else if (displacement((T) robinhoodHashingHashTable[loc], loc) >= d)
                 {
                     d = d + 1;
-                    loc = (loc + 1) % doubleHashingHashTable.length;
+                    loc = (loc + 1) % robinhoodHashingHashTable.length;
                 }
                 else
                 {
-                    Entry<T> temp = doubleHashingHashTable[loc];
-                    doubleHashingHashTable[loc] = new Entry(x);
+                    Entry<T> temp = robinhoodHashingHashTable[loc];
+                    robinhoodHashingHashTable[loc] = new Entry(x);
                     x = temp.data;
 
-                    loc = (loc + 1) % doubleHashingHashTable.length;
+                    loc = (loc + 1) % robinhoodHashingHashTable.length;
                     d = displacement(x, loc);
                 }
         }
@@ -148,15 +147,25 @@ public class RobinhoodHashing<T> {
 
     private void rehashTable() {
 
+        Entry<T> temporaryHashingTable[] = this.robinhoodHashingHashTable;
+        this.capacity = capacity * 2;
+        this.robinhoodHashingHashTable = new Entry[capacity];
+
+        for (int i = 0; i < temporaryHashingTable.length; i++) {
+            if (temporaryHashingTable[i] != null) {
+                add(temporaryHashingTable[i].data);
+            }
+        }
+
     }
 
     public Entry remove(T x)
     {
         int loc = find(x);
-        if (doubleHashingHashTable[loc]!= null && doubleHashingHashTable[loc].data.equals(x))
+        if (robinhoodHashingHashTable[loc] != null && robinhoodHashingHashTable[loc].data.equals(x))
         {
-            Entry result = doubleHashingHashTable[loc];
-            doubleHashingHashTable[loc].isDeleted = true;
+            Entry result = robinhoodHashingHashTable[loc];
+            robinhoodHashingHashTable[loc].isDeleted = true;
             return result;
         }
         else
