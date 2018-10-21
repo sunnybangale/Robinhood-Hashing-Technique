@@ -8,7 +8,7 @@ public class RobinhoodHashing<T> {
     private int size;
     private Entry[] robinhoodHashingHashTable;
     private int capacity;
-    private int maxDisplacement = 0;
+    //private int maxDisplacement = 0;
 
     static class Entry<T>
     {
@@ -88,7 +88,7 @@ public class RobinhoodHashing<T> {
     public int find(T x)
     {
         int k = 0;
-        int ik = hashHelper(x);
+        int ik = 0;
 
         while (true)
         //while( k <= maxDisplacement)
@@ -114,7 +114,9 @@ public class RobinhoodHashing<T> {
         //while( k <= maxDisplacement)
         {
             k++;
-            if (robinhoodHashingHashTable[ik].data.equals(x))
+            ik = (hashHelper(x) + k) % robinhoodHashingHashTable.length;
+
+            if (robinhoodHashingHashTable[ik] != null && robinhoodHashingHashTable[ik].data.equals(x))
             {
                 return ik;
             }
@@ -149,6 +151,11 @@ public class RobinhoodHashing<T> {
             } else if (displacement((T) robinhoodHashingHashTable[loc], loc) >= d) {
                 d = d + 1;
                 loc = (loc + 1) % robinhoodHashingHashTable.length;
+
+                /*if (d > maxDisplacement) {
+                    maxDisplacement = d;
+                }*/
+
             } else {
                 Entry<T> temp = robinhoodHashingHashTable[loc];
                 temp.data = (T) robinhoodHashingHashTable[loc].data;
@@ -159,9 +166,9 @@ public class RobinhoodHashing<T> {
                 loc = (loc + 1) % robinhoodHashingHashTable.length;
                 d = displacement(x, loc);
 
-                if (d > maxDisplacement) {
+                /*if (d > maxDisplacement) {
                     maxDisplacement = d;
-                }
+                }*/
 
             }
         }
@@ -169,7 +176,7 @@ public class RobinhoodHashing<T> {
 
     public Entry remove(T x) {
         int loc = find(x);
-        if (robinhoodHashingHashTable[loc] != null && robinhoodHashingHashTable[loc].data.equals(x)) {
+        if (robinhoodHashingHashTable[loc] != null && robinhoodHashingHashTable[loc].data.equals(x) && !robinhoodHashingHashTable[loc].isDeleted) {
             Entry result = robinhoodHashingHashTable[loc];
             robinhoodHashingHashTable[loc].isDeleted = true;
             this.size--;
@@ -186,7 +193,7 @@ public class RobinhoodHashing<T> {
         this.size = 0;
 
         for (int i = 0; i < temporaryHashingTable.length; i++) {
-            if (temporaryHashingTable[i] != null) {
+            if (temporaryHashingTable[i] != null && !temporaryHashingTable[i].isDeleted) {
                 temporaryHashingTable[i].isDeleted = false;
                 add(temporaryHashingTable[i].data);
             }

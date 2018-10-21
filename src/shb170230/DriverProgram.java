@@ -11,22 +11,22 @@ public class DriverProgram {
 
         RobinhoodHashing<Integer> map = new RobinhoodHashing();
 
-/*
+
         Random random = new Random();
-        for (int i = 0; i <= 1000; i++) {
+        for (int i = 0; i <= 10000; i++) {
             //map.add(random.nextInt());
             map.add(i);
         }
-        //map.printTable();
+        map.printTable();
         System.out.println(map.getSize());
 
-        for (int i = 0; i <= 1000; i++) {
+        for (int i = 0; i <= 10000; i++) {
             //map.remove(random.nextInt());
             map.remove(i);
         }
-        //map.printTable();
+        map.printTable();
         System.out.println(map.getSize());
-*/
+
 
         Random r = new Random();
         Integer[] integers = new Integer[10000000];
