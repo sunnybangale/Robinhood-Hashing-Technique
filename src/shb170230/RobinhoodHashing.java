@@ -1,11 +1,13 @@
 package shb170230;
 
+import java.util.HashSet;
+
 public class RobinhoodHashing<T> {
 
     static final double LOADFACTOR = 0.5;
     private int size;
     private Entry[] robinhoodHashingHashTable;
-    private int capacity = 1024;
+    private int capacity;
     private int maxDisplacement = 0;
 
     static class Entry<T>
@@ -23,6 +25,7 @@ public class RobinhoodHashing<T> {
     RobinhoodHashing()
     {
         this.size = 0;
+        this.capacity = 1024;
         this.robinhoodHashingHashTable = new Entry[capacity];
     }
 
@@ -39,7 +42,47 @@ public class RobinhoodHashing<T> {
 
     private static int indexFor(int h, int length)
     {
-        return (h & length-1);
+        return (h & (length - 1));
+    }
+
+    static <T> int distinctElements(T[] arr) {
+        RobinhoodHashing<T> rh = new RobinhoodHashing<>();
+        HashSet<T> set = new HashSet<>();
+
+        for (T ele : arr) {
+            rh.add(ele);
+            set.add(ele);
+        }
+        //rh.printTable();
+        System.out.println("Robinhood size " + rh.getSize());
+        System.out.println("Hashset size " + set.size());
+
+        return rh.size;
+    }
+
+    public int getSize() {
+        return this.size;
+    }
+
+    public void printTable() {
+        System.out.print("Table: ");
+        for (int j = 0; j < robinhoodHashingHashTable.length; j++) {
+            if (robinhoodHashingHashTable[j] != null && robinhoodHashingHashTable[j].isDeleted == false)
+                System.out.print(robinhoodHashingHashTable[j].data + " ");
+            else
+                System.out.print("* ");
+        }
+        System.out.println();
+    }
+
+    public boolean contains(T x) {
+        int loc = find(x);
+        return ((robinhoodHashingHashTable[loc] != null) && robinhoodHashingHashTable[loc].data.equals(x)
+                && (robinhoodHashingHashTable[loc].isDeleted == false));
+    }
+
+    private int displacement(T x, int loc) {
+        return loc >= hashHelper(x) ? loc - hashHelper(x) : robinhoodHashingHashTable.length + loc - hashHelper(x);
     }
 
     public int find(T x)
@@ -57,15 +100,11 @@ public class RobinhoodHashing<T> {
                     (robinhoodHashingHashTable[ik].data.equals(x) && !robinhoodHashingHashTable[ik].isDeleted))
             {
                 return ik;
+            } else if (robinhoodHashingHashTable[ik].isDeleted) {
+                break;
+            } else {
+                k++;
             }
-            else if (robinhoodHashingHashTable[ik].isDeleted)
-                {
-                    break;
-                }
-                else
-                {
-                    k++;
-                }
         }
 
         int xspot = ik;
@@ -86,47 +125,8 @@ public class RobinhoodHashing<T> {
         //return ik;
     }
 
-    public void printTable()
-    {
-        System.out.print("Table: ");
-        for (int j = 0; j < robinhoodHashingHashTable.length; j++)
-        {
-            if (robinhoodHashingHashTable[j] != null && robinhoodHashingHashTable[j].isDeleted == false)
-                System.out.print(robinhoodHashingHashTable[j].data + " ");
-            else
-                System.out.print("* ");
-        }
-        System.out.println();
-    }
-
-    public boolean contains(T x)
-    {
-        int loc = find(x);
-        return ((robinhoodHashingHashTable[loc] != null) && robinhoodHashingHashTable[loc].data.equals(x)
-                && (robinhoodHashingHashTable[loc].isDeleted == false));
-    }
-
-    private int displacement(T x, int loc)
-    {
-        return loc >= hashHelper(x) ? loc - hashHelper(x) : robinhoodHashingHashTable.length + loc - hashHelper(x);
-    }
-
-    static <T> int distinctElements(T[] arr) {
-        RobinhoodHashing<T> rh = new RobinhoodHashing<>();
-        for (T ele : arr) {
-            rh.add(ele);
-        }
-        //rh.printTable();
-        return rh.size;
-    }
-
     public boolean add(T x)
     {
-        double currentLoad = (this.size + 1) / (robinhoodHashingHashTable.length * 1.0);
-        if (currentLoad > LOADFACTOR) {
-            rehashTable();
-        }
-
         if (contains(x)) {
             return false;
         }
@@ -136,31 +136,31 @@ public class RobinhoodHashing<T> {
 
         while(true)
         {
-            if (robinhoodHashingHashTable[loc] == null || robinhoodHashingHashTable[loc].isDeleted == true)
+            if (robinhoodHashingHashTable[loc] == null || robinhoodHashingHashTable[loc].isDeleted)
             {
                 robinhoodHashingHashTable[loc] = new Entry(x);
                 this.size++;
+                double currentLoad = (this.size * 1.0) / (robinhoodHashingHashTable.length * 1.0);
+                if (currentLoad > LOADFACTOR) {
+                    rehashTable();
+                }
                 return true;
+            } else if (displacement((T) robinhoodHashingHashTable[loc], loc) >= d) {
+                d = d + 1;
+                loc = (loc + 1) % robinhoodHashingHashTable.length;
+            } else {
+                Entry<T> temp = robinhoodHashingHashTable[loc];
+                robinhoodHashingHashTable[loc] = new Entry(x);
+                x = temp.data;
+
+                loc = (loc + 1) % robinhoodHashingHashTable.length;
+                d = displacement(x, loc);
+
+                if (d > maxDisplacement) {
+                    maxDisplacement = d;
+                }
+
             }
-            else if (displacement((T) robinhoodHashingHashTable[loc], loc) >= d)
-                {
-                    d = d + 1;
-                    loc = (loc + 1) % robinhoodHashingHashTable.length;
-                }
-                else
-                {
-                    Entry<T> temp = robinhoodHashingHashTable[loc];
-                    robinhoodHashingHashTable[loc] = new Entry(x);
-                    x = temp.data;
-
-                    loc = (loc + 1) % robinhoodHashingHashTable.length;
-                    d = displacement(x, loc);
-
-                    if (d > maxDisplacement) {
-                        maxDisplacement = d;
-                    }
-
-                }
         }
     }
 
