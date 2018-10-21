@@ -17,94 +17,99 @@ public class DriverProgram {
         int operand = 0;
         long modValue = 1000000009;
         long result = 0;
-        int val = 0; // change to 1, for testing java hashset
-        if(val == 1) {
-            Timer timer = new Timer();
-            Set<Integer> set = new HashSet<>();
-            while (!((operation = sc.next()).equals("End"))) {
-                switch (operation) {
-                    case "Add": {
-                        operand = sc.nextInt();
-                        if(set.add(operand) == true ) {
-                            result = (result + 1) % modValue;
-                        }
-                        break;
-                    }
-                    case "Remove": {
-                        operand = sc.nextInt();
-                        if (set.remove(operand) != false) {
-                            result = (result + 1) % modValue;
-                        }
-                        break;
-                    }
-                    case "Contains":{
-                        operand = sc.nextInt();
-                        if (set.contains(operand)) {
-                            result = (result + 1) % modValue;
-                        }
-                        break;
-                    }
-                    default:
-                        break;
-                }
-            }
-            System.out.println("java hashset result : "+result);
-            System.out.println("java hashset size : "+set.size());
-            System.out.println(timer.end());
-        }
-        else {
-            Timer timer = new Timer();
-            RobinhoodHashing<Integer> dm = new RobinhoodHashing();
-            while (!((operation = sc.next()).equals("End"))) {
-                switch (operation) {
-                    case "Add": {
-                        operand = sc.nextInt();
-                        if(dm.add(new Integer(operand))) {
-                            result = (result + 1) % modValue;
-                        }
-                        break;
-                    }
-                    case "Remove": {
-                        operand = sc.nextInt();
-                        if (dm.remove(new Integer(operand)) != null) {
-                            result = (result + 1) % modValue;
-                        }
-                        break;
-                    }
-                    case "Contains":{
-                        operand = sc.nextInt();
-                        if (dm.contains(new Integer(operand))) {
-                            result = (result + 1) % modValue;
-                        }
-                        break;
-                    }
-                    default:
-                        break;
-                }
-            }
-            System.out.println("robinhood result : "+result);
-            System.out.println("robinhood size : "+dm.getSize());
-            System.out.println(timer.end());
-        }
 
-        /*RobinhoodHashing<Integer> map = new RobinhoodHashing();
-        Random r = new Random();
+        System.out.println("After performing large number of Add, Remove and Contains operations\n");
+        Timer timer = new Timer();
+        Set<Integer> set = new HashSet<>();
+        while (!((operation = sc.next()).equals("End"))) {
+            switch (operation) {
+                case "Add": {
+                    operand = sc.nextInt();
+                    if(set.add(operand) == true ) {
+                        result = (result + 1) % modValue;
+                    }
+                    break;
+                }
+                case "Remove": {
+                    operand = sc.nextInt();
+                    if (set.remove(operand) != false) {
+                        result = (result + 1) % modValue;
+                    }
+                    break;
+                }
+                case "Contains":{
+                    operand = sc.nextInt();
+                    if (set.contains(operand)) {
+                        result = (result + 1) % modValue;
+                    }
+                    break;
+                }
+                default:
+                    break;
+            }
+        }
+        System.out.println("Java Hashset result : "+ result);
+        System.out.println("Java Hashset size : "+ set.size());
+        System.out.println(timer.end());
+
+        File file = new File(args[0]);
+        sc = new Scanner(file);
+        result = 0;
+        RobinhoodHashing<Integer> dm = new RobinhoodHashing();
+        while (!((operation = sc.next()).equals("End"))) {
+            switch (operation) {
+                case "Add": {
+                    operand = sc.nextInt();
+                    if(dm.add(new Integer(operand))) {
+                        result = (result + 1) % modValue;
+                    }
+                    break;
+                }
+                case "Remove": {
+                    operand = sc.nextInt();
+                    if (dm.remove(new Integer(operand)) != null) {
+                        result = (result + 1) % modValue;
+                    }
+                    break;
+                }
+                case "Contains":{
+                    operand = sc.nextInt();
+                    if (dm.contains(new Integer(operand))) {
+                        result = (result + 1) % modValue;
+                    }
+                    break;
+                }
+                default:
+                    break;
+            }
+        }
+        System.out.println("\nRobinhood Hashing result : "+ result);
+        System.out.println("Robinhood Hashing size : "+ dm.getSize());
+        System.out.println(timer.end());
+
+        /*Generate an array of random integers, and calculate how many distinct
+        * numbers it has.
+        * Compare running times of HashSet and your hashing implementation, for large n.*/
+
+        Random random = new Random();
         Integer[] integers = new Integer[1000000];
         for (int i = 0; i < integers.length; i++) {
-            int newNumber = r.nextInt();
+            int newNumber = random.nextInt();
             integers[i] = newNumber;
         }
-        Timer timer = new Timer();
+        System.out.println("-------------------------------------------------");
+        System.out.println("Adding random integers\n");
+        //Timer timer = new Timer();
         timer.start();
-        System.out.println("Distinct elements in Robinhood hasing " + RobinhoodHashing.distinctElements(integers));
+        System.out.println("Distinct elements in Robinhood hasing : " + RobinhoodHashing.distinctElements(integers));
         timer.end();
         System.out.println(timer);
 
         timer.start();
-        Set<Integer> set = new HashSet<>();
-        set.addAll(Arrays.asList(integers));
-        System.out.println("Distinct elements in HashSet " + set.size());
+        Set<Integer> jset = new HashSet<>();
+        jset.addAll(Arrays.asList(integers));
+        System.out.println("\nDistinct elements in Java's HashSet : " + jset.size());
         timer.end();
-        System.out.println(timer);*/
+        System.out.println(timer);
     }
 }
