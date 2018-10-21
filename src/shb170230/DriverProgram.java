@@ -1,6 +1,8 @@
 package shb170230;
 
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 public class DriverProgram {
 
@@ -27,7 +29,7 @@ public class DriverProgram {
 */
 
         Random r = new Random();
-        Integer[] integers = new Integer[1000000];
+        Integer[] integers = new Integer[10000000];
         for (int i = 0; i < integers.length; i++) {
             int newNumber = r.nextInt();
             integers[i] = newNumber;
@@ -40,7 +42,7 @@ public class DriverProgram {
         timer.end();
         System.out.println(timer);
 
-        /*timer.start();
+        timer.start();
         Set<Integer> set = new HashSet<>();
         //set.addAll(Arrays.asList(integers));
         for (int i = 0; i < integers.length; i++) {
@@ -48,7 +50,7 @@ public class DriverProgram {
         }
         System.out.println("Distinct elements in HashSet " + set.size());
         timer.end();
-        System.out.println(timer);*/
+        System.out.println(timer);
 
     }
 

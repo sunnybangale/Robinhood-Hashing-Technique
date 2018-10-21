@@ -51,11 +51,11 @@ public class RobinhoodHashing<T> {
 
         for (T ele : arr) {
             rh.add(ele);
-            set.add(ele);
+            //set.add(ele);
         }
         //rh.printTable();
-        System.out.println("Robinhood size " + rh.getSize());
-        System.out.println("Hashset size " + set.size());
+        //System.out.println("Robinhood size " + rh.getSize());
+        //System.out.println("Hashset size " + set.size());
 
         return rh.size;
     }
@@ -94,7 +94,8 @@ public class RobinhoodHashing<T> {
         //while( k <= maxDisplacement)
         {
             //ik = hashHelper(x) + (k * hashHelper2(x)) % size;
-            ik = (ik + k) % robinhoodHashingHashTable.length;
+            //ik = (ik + k) % robinhoodHashingHashTable.length;
+            ik = (hashHelper(x) + k) % robinhoodHashingHashTable.length;
 
             if (robinhoodHashingHashTable[ik] == null ||
                     (robinhoodHashingHashTable[ik].data.equals(x) && !robinhoodHashingHashTable[ik].isDeleted))
@@ -150,6 +151,8 @@ public class RobinhoodHashing<T> {
                 loc = (loc + 1) % robinhoodHashingHashTable.length;
             } else {
                 Entry<T> temp = robinhoodHashingHashTable[loc];
+                temp.data = (T) robinhoodHashingHashTable[loc].data;
+
                 robinhoodHashingHashTable[loc] = new Entry(x);
                 x = temp.data;
 
