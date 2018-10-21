@@ -4,16 +4,16 @@ import java.util.HashSet;
 
 public class RobinhoodHashing<T> {
 
-    static final double LOADFACTOR = 0.5;
-    private int size;
-    private Entry[] robinhoodHashingHashTable;
-    private int capacity;
-    //private int maxDisplacement = 0;
+    static final double LOADFACTOR = 0.5; // load factor represents at what level the Rohinhood hashtable capacity should be doubled
+    private int size; // size of the rohinhood hashtable
+    private Entry[] robinhoodHashingHashTable; // stores elements in the array
+    private int capacity; // maximum capacity to store elements in the table
+    //private int maxDisplacement = 0; // maximum displacement
 
     static class Entry<T>
     {
-        T data;
-        boolean isDeleted;
+        T data; // store the data of the element
+        boolean isDeleted; // to check whether the element is deleted or not
 
         Entry(T data)
         {
@@ -25,45 +25,62 @@ public class RobinhoodHashing<T> {
     RobinhoodHashing()
     {
         this.size = 0;
-        this.capacity = 1024;
+        this.capacity = 1024; // initial capacity of the table
         this.robinhoodHashingHashTable = new Entry[capacity];
     }
 
+    /* hash method
+     * Purpose:
+     * Parameters:
+     * Return values: */
     static int hash(int h)
     {
         h ^= (h >>> 20) ^ (h >>> 12);
         return h ^ (h >>> 7) ^ (h >>> 4);
     }
-
+    
+    /* hashHelper method
+     * Purpose:
+     * Parameters:
+     * Return values: */
     private int hashHelper(T x)
     {
         return indexFor(hash(x.hashCode()), robinhoodHashingHashTable.length);
     }
 
+    /* indexFor method
+     * Purpose:
+     * Parameters:
+     * Return values: */
     private static int indexFor(int h, int length)
     {
         return (h & (length - 1));
     }
-
+    
+    /* distinctElements method
+     * Purpose:
+     * Parameters:
+     * Return values: */
     static <T> int distinctElements(T[] arr) {
         RobinhoodHashing<T> rh = new RobinhoodHashing<>();
         HashSet<T> set = new HashSet<>();
 
         for (T ele : arr) {
             rh.add(ele);
-            //set.add(ele);
         }
-        //rh.printTable();
-        //System.out.println("Robinhood size " + rh.getSize());
-        //System.out.println("Hashset size " + set.size());
-
         return rh.size;
     }
 
+    /* getSize method
+     * Purpose:
+     * Parameters:
+     * Return values: */
     public int getSize() {
         return this.size;
     }
 
+    /* printTable method
+     * Purpose: */
     public void printTable() {
         System.out.print("Table: ");
         for (int j = 0; j < robinhoodHashingHashTable.length; j++) {
@@ -75,16 +92,28 @@ public class RobinhoodHashing<T> {
         System.out.println();
     }
 
+    /* contains method
+     * Purpose:
+     * Parameters:
+     * Return values: */
     public boolean contains(T x) {
         int loc = find(x);
         return ((robinhoodHashingHashTable[loc] != null) && robinhoodHashingHashTable[loc].data.equals(x)
                 && (robinhoodHashingHashTable[loc].isDeleted == false));
     }
 
+    /* displacement method
+     * Purpose:
+     * Parameters:
+     * Return values: */
     private int displacement(T x, int loc) {
         return loc >= hashHelper(x) ? loc - hashHelper(x) : robinhoodHashingHashTable.length + loc - hashHelper(x);
     }
 
+    /* find method
+     * Purpose:
+     * Parameters:
+     * Return values: */
     public int find(T x)
     {
         int k = 0;
