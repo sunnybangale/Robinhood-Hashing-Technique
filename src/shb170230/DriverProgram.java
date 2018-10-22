@@ -1,3 +1,14 @@
+/**
+ * @author shb170230
+ * Robinhood Hashing Class
+ * <p>
+ * SP7 for CS 5V81 (F18)
+ * <p>
+ * Team members:
+ * 1. Sunny Bangale
+ * 2. Utkarsh Gandhi
+ */
+
 package shb170230;
 
 import java.io.File;
@@ -20,12 +31,13 @@ public class DriverProgram {
 
         System.out.println("After performing large number of Add, Remove and Contains operations\n");
         Timer timer = new Timer();
+        timer.start();
         Set<Integer> set = new HashSet<>();
         while (!((operation = sc.next()).equals("End"))) {
             switch (operation) {
                 case "Add": {
                     operand = sc.nextInt();
-                    if(set.add(operand) == true ) {
+                    if (set.add(operand) == true) {
                         result = (result + 1) % modValue;
                     }
                     break;
@@ -37,7 +49,7 @@ public class DriverProgram {
                     }
                     break;
                 }
-                case "Contains":{
+                case "Contains": {
                     operand = sc.nextInt();
                     if (set.contains(operand)) {
                         result = (result + 1) % modValue;
@@ -48,19 +60,21 @@ public class DriverProgram {
                     break;
             }
         }
-        System.out.println("Java Hashset result : "+ result);
-        System.out.println("Java Hashset size : "+ set.size());
-        System.out.println(timer.end());
+        System.out.println("Java Hashset result : " + result);
+        System.out.println("Java Hashset size : " + set.size());
+        System.out.println("Time taken by Hashset " + timer.end());
 
         File file = new File(args[0]);
         sc = new Scanner(file);
         result = 0;
+
+        timer.start();
         RobinhoodHashing<Integer> dm = new RobinhoodHashing();
         while (!((operation = sc.next()).equals("End"))) {
             switch (operation) {
                 case "Add": {
                     operand = sc.nextInt();
-                    if(dm.add(new Integer(operand))) {
+                    if (dm.add(new Integer(operand))) {
                         result = (result + 1) % modValue;
                     }
                     break;
@@ -72,7 +86,7 @@ public class DriverProgram {
                     }
                     break;
                 }
-                case "Contains":{
+                case "Contains": {
                     operand = sc.nextInt();
                     if (dm.contains(new Integer(operand))) {
                         result = (result + 1) % modValue;
@@ -83,13 +97,13 @@ public class DriverProgram {
                     break;
             }
         }
-        System.out.println("\nRobinhood Hashing result : "+ result);
-        System.out.println("Robinhood Hashing size : "+ dm.getSize());
-        System.out.println(timer.end());
+        System.out.println("\nRobinhood Hashing result : " + result);
+        System.out.println("Robinhood Hashing size : " + dm.getSize());
+        System.out.println("Time taken by Robinhood " + timer.end());
 
         /*Generate an array of random integers, and calculate how many distinct
-        * numbers it has.
-        * Compare running times of HashSet and your hashing implementation, for large n.*/
+         * numbers it has.
+         * Compare running times of HashSet and your hashing implementation, for large n.*/
 
         Random random = new Random();
         Integer[] integers = new Integer[1000000];
@@ -99,17 +113,16 @@ public class DriverProgram {
         }
         System.out.println("-------------------------------------------------");
         System.out.println("Adding random integers\n");
-        //Timer timer = new Timer();
         timer.start();
         System.out.println("Distinct elements in Robinhood hasing : " + RobinhoodHashing.distinctElements(integers));
         timer.end();
-        System.out.println(timer);
+        System.out.println("Time taken by Robinhood " + timer);
 
         timer.start();
         Set<Integer> jset = new HashSet<>();
         jset.addAll(Arrays.asList(integers));
         System.out.println("\nDistinct elements in Java's HashSet : " + jset.size());
         timer.end();
-        System.out.println(timer);
+        System.out.println("Time taken by Hashset " + timer);
     }
 }
